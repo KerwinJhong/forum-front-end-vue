@@ -46,6 +46,8 @@
 </template>
 
 <script>
+import authorizationAPI from "./../apis/authorization";
+
 export default {
   name: "SignIn",
   data() {
@@ -56,13 +58,19 @@ export default {
   },
   methods: {
     handleSubmit() {
-      const data = JSON.stringify({
-        email: this.email,
-        password: this.password
-      });
-
-      // eslint-disable-next-line
-      console.log("data", data);
+      authorizationAPI
+        .signIn({
+          email: this.email,
+          password: this.password
+        })
+        .then(response => {
+          // 取得 API 請求後的資料
+          const { data } = response;
+          // 將 token 存放在 localStorage 內
+          localStorage.setItem("token", data.token);
+          // 成功登入後轉址到餐聽首頁
+          this.$router.push("/restaurants");
+        });
     }
   }
 };
