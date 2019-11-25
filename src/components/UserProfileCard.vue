@@ -30,7 +30,11 @@
             <strong>{{followers.length}}</strong> Followers (追隨者)
           </li>
           <li>
-            <a class="btn btn-primary mt-3" href="/users/{{profile.id}}/edit">edit</a>
+            <router-link
+              v-if="isCurrentUser"
+              to="/users/{{profile.id}}/edit"
+              class="btn btn-primary mt-3"
+            >Edit</router-link>
           </li>
         </ul>
       </div>
@@ -45,6 +49,10 @@ export default {
     initialUser: {
       type: Object,
       required: true
+    },
+    isCurrentUser: {
+      type: Boolean,
+      required: false
     }
   },
   data() {

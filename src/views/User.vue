@@ -1200,6 +1200,17 @@ const dummyData = {
   'isFollowed': false
 }
 
+const dummyUser = {
+  user: {
+    id: 1,
+    name: "管理者",
+    email: "root@example.com",
+    image: "https://i.pravatar.cc/300",
+    isAdmin: true
+  },
+  isAuthenticated: true
+};
+
 export default {
   components: {
     User,
@@ -1214,7 +1225,8 @@ export default {
       comments: [],
       favoritedRestaurants: [],
       followers: [],
-      followings: []
+      followings: [],
+      currentUser: false
     }
   },
   created(){
@@ -1227,6 +1239,7 @@ export default {
       this.favoritedRestaurants = dummyData.profile.FavoritedRestaurants
       this.followers = dummyData.profile.Followers
       this.followings = dummyData.profile.Followings
+      this.currentUser = dummyUser.user.id === dummyData.profile.id
     }
   }
 };

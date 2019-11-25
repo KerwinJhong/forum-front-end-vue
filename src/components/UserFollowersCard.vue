@@ -4,9 +4,13 @@
       <strong>{{followers.length}}</strong> followers (追隨者)
     </div>
     <div class="card-body">
-      <a v-for="follower in followers" :key="follower.id" href="/restaurants/3">
+      <router-link
+        v-for="follower in Followers"
+        :key="follower.id"
+        :to="{params: { id: follower.id }}"
+      >
         <img :src="followers.image" width="60" height="60" class="avatar" />
-      </a>
+      </router-link>
     </div>
   </div>
 </template>

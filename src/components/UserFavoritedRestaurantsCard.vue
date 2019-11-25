@@ -4,13 +4,13 @@
       <strong>{{favoritedRestaurants.length}}</strong> 收藏的餐廳
     </div>
     <div class="card-body">
-      <a
+      <router-link
         v-for="favoritedRestaurant in favoritedRestaurants"
         :key="favoritedRestaurant.id"
-        href="/restaurants/3"
+        :to="{name: 'restaurant',params: { id: favoritedRestaurant.id }}"
       >
         <img :src="favoritedRestaurant.image" width="60" height="60" class="avatar" />
-      </a>
+      </router-link>
     </div>
   </div>
 </template>
