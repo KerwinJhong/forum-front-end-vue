@@ -1,77 +1,43 @@
 <template>
-  <div class="row">
-    <div class="col-md-12"></div>
-    <div class="col-md-4">
-      <img
-        class="img-responsive center-block"
-        src="{{profile.image}}"
-        style="width: 250px;margin-bottom: 25px;"
-      />
+  <div class="col-3 mb-4">
+    <img class :src="profile.image" width="140px" height="140px" />
+    <h2>{{profile.name}}</h2>
+    <span class="badge badge-secondary">追蹤人數：{{(profile.FollowerNum)}}</span>
+    <br />
+    <div v-if="!isCurrentUser">
+      <button
+        v-if="profile.isFollowed"
+        type="button"
+        class="btn btn-danger like mt-2"
+        @click.stop.prevent="deleteFollowing(profile.id)"
+      >取消追蹤</button>
+      <button
+        v-else
+        type="button"
+        class="btn btn-primary like mt-2"
+        @click.stop.prevent="addFollowing(profile.id)"
+      >追蹤</button>
     </div>
-    <div class="col-md-8">
-      <div class="well">
-        <ul class="list-unstyled">
-          <li>
-            <h5>{{profile.name}}</h5>
-          </li>
-          <li>
-            <p>{{profile.email}}</p>
-          </li>
-          <li>
-            <strong>{{restaurants.length}}</strong> 已評論餐廳
-          </li>
-          <li>
-            <strong>{{favoritedRestaurants.length}}</strong> 收藏的餐廳
-          </li>
-          <li>
-            <strong>{{followings.length}}</strong> Followings (追蹤者)
-          </li>
-          <li>
-            <strong>{{followers.length}}</strong> Followers (追隨者)
-          </li>
-          <li>
-            <router-link
-              v-if="isCurrentUser"
-              to="/users/{{profile.id}}/edit"
-              class="btn btn-primary mt-3"
-            >Edit</router-link>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <hr />
   </div>
 </template>
 
 <script>
 export default {
   props: {
-    initialUser: {
+    profile: {
       type: Object,
       required: true
     },
     isCurrentUser: {
-      type: Boolean,
-      required: false
+      type: Boolean
     }
   },
-  data() {
-    return {
-      user: this.initialUser
-    };
-  },
   methods: {
-    addFollow() {
-      this.users = {
-        ...this.users,
-        isFollowed: true
-      };
+    async addFollowing(userId) {
+      this.$emit("after-add-following", userId);
     },
-    deleteFollow() {
-      this.users = {
-        ...this.users,
-        isFollowed: false
-      };
+    async deleteFollowing(userId) {
+      this.$emit("after-delete-following", userId);
     }
   }
 };

@@ -7,7 +7,9 @@
           <input type="text" v-model="newCategoryName" class="form-control" placeholder="新增餐廳類別..." />
         </div>
         <div class="col-auto">
-          <button type="button" class="btn btn-primary" @click.stop.prevent="createCategory">新增</button>
+          <button type="button" class="btn btn-primary" 
+          @click.stop.prevent="createCategory" 
+          :disabled="isProcessing">新增</button>
         </div>
       </div>
     </form>
@@ -30,8 +32,7 @@
               type="text"
               class="form-control"
             />
-            <span v-show="category.isEditing" class="cancel"
-            @click="handleCancel(category.id)">✕</span>
+            <span v-show="category.isEditing" class="cancel" @click="handleCancel(category.id)">✕</span>
           </td>
           <td class="d-flex justify-content-between">
             <button
@@ -60,36 +61,8 @@
 
 <script>
 import AdminNav from "./../components/AdminNav";
-import uuid from "uuid/v4";
-
-const dummyData = {
-  categories: [
-    {
-      id: 1,
-      name: "中式料理",
-      createdAt: "2019-06-22T09:00:43.000Z",
-      updatedAt: "2019-06-22T09:00:43.000Z"
-    },
-    {
-      id: 2,
-      name: "日本料理",
-      createdAt: "2019-06-22T09:00:43.000Z",
-      updatedAt: "2019-06-22T09:00:43.000Z"
-    },
-    {
-      id: 3,
-      name: "義大利料理",
-      createdAt: "2019-06-22T09:00:43.000Z",
-      updatedAt: "2019-06-22T09:00:43.000Z"
-    },
-    {
-      id: 4,
-      name: "墨西哥料理",
-      createdAt: "2019-06-22T09:00:43.000Z",
-      updatedAt: "2019-06-22T09:00:43.000Z"
-    }
-  ]
-};
+import adminAPI from "./../apis/admin";
+import { Toast } from "./../utils/helpers";
 
 export default {
   components: {
@@ -98,30 +71,88 @@ export default {
   data() {
     return {
       newCategoryName: "",
-      categories: []
+      categories: [],
+      isProcessing: false
     };
   },
   created() {
     this.fetchCategories();
   },
   methods: {
-    fetchCategories() {
-      this.categories = dummyData.categories.map(category => ({
-        ...category,
-        isEditing: false
-      }));
+    async fetchCategories() {
+      try {
+        const { data, statusText } = await adminAPI.categories.get();
+
+        if (statusText !== "OK") {
+          throw new Error(statusText);
+        }
+
+        this.categories = data.categories.map(category => ({
+          ...category,
+          isEditing: false
+        }));
+      } catch (error) {
+        Toast.fire({
+          type: "error",
+          title: "無法取得分類清單，請稍後再試"
+        });
+      }
     },
-    createCategory() {
-      this.categories.push({
-        id: uuid(),
-        name: this.newCategoryName
-      });
-      this.newCategoryName = "";
+    async createCategory() {
+      try {
+        this.processing = true;
+        const { data, statusText } = await adminAPI.categories.create({
+          name: this.newCategoryName
+        });
+
+        if (statusText !== "OK" || data.status !== "success") {
+          throw new Error(statusText);
+        }
+
+        this.categories.push({
+          ...data.category,
+          isEditing: false
+        });
+
+        this.newCategoryName = "";
+        this.isProcessing = false;
+        this.fetchCategories()
+
+        Toast.fire({
+          type: "success",
+          title: "成功新增分類"
+        });
+      } catch (error) {
+        Toast.fire({
+          type: "error",
+          title: "無法新增分類清單，請稍後再試"
+        });
+      }
     },
-    deleteCategory(categoryId) {
-      this.categories = this.categories.filter(
-        category => category.id !== categoryId
-      );
+    async deleteCategory(categoryId) {
+      try {
+        const { data, statusText } = await adminAPI.categories.delete({
+          categoryId
+        });
+
+        if (statusText !== "OK" || data.status !== "success") {
+          throw new Error(statusText);
+        }
+
+        this.categories = this.categories.filter(
+          category => category.id !== categoryId
+        );
+
+        Toast.fire({
+          type: "success",
+          title: "成功刪除分類"
+        });
+      } catch (error) {
+        Toast.fire({
+          type: "error",
+          title: "無法刪除分類，請稍後再試"
+        });
+      }
     },
     toggleIsEditing(categoryId) {
       this.categories = this.categories.map(category => {
@@ -134,23 +165,36 @@ export default {
         };
       });
     },
-    updateCategory({ categoryId }) {
-      // TODO: 透過 API 去向伺服器更新餐廳類別名稱
-      this.toggleIsEditing(categoryId);
+    async updateCategory({ categoryId, name }) {
+      try {
+        const { data, statusText } = await adminAPI.categories.update({
+          categoryId,
+          name
+        });
+        if (statusText !== "OK" || data.status !== "success") {
+          throw new Error(statusText);
+        }
+        this.toggleIsEditing(categoryId);
+      } catch (error) {
+        Toast.fire({
+          type: "error",
+          title: "無法更新餐廳類別，請稍後再試"
+        });
+      }
     },
-    handleCancel (categoryId) {
+    handleCancel(categoryId) {
       this.categories = this.categories.map(category => {
         if (category.id !== categoryId) {
-          return category
+          return category;
         }
 
         // 將原本的類別名稱還回去
         return {
           ...category,
           name: category.nameCached
-        }
-      })
-      this.toggleIsEditing(categoryId)
+        };
+      });
+      this.toggleIsEditing(categoryId);
     }
   }
 };

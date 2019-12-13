@@ -11,9 +11,13 @@ import AdminNav from "./../components/AdminNav";
 import AdminRestaurantsTable from "./../components/AdminRestaurantsTable";
 
 export default {
+  data() {
+    return {};
+  },
   components: {
     AdminNav,
     AdminRestaurantsTable
-  }
+  },
+  methods: {}
 };
 </script>

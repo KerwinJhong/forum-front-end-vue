@@ -17,7 +17,7 @@
             <p>有{{ restaurant.Comments.length }}筆評論</p>
           </li>
           <li>
-            <p>有{{ restaurant.Comments.length }}人收藏這家餐廳</p>
+            <p>有{{ restaurant.FavoritedUsers.length }}人收藏這家餐廳</p>
           </li>
         </ul>
       </div>

@@ -1,22 +1,42 @@
 <template>
   <div class="container py-5">
-    <AdminRestaurantForm @after-submit="handleAfterSubmit" />
+    <AdminRestaurantForm :is-processing="isProcessing" @after-submit="handleAfterSubmit" />
   </div>
 </template>
 
 <script>
 import AdminRestaurantForm from "./../components/AdminRestaurantForm.vue";
+import adminAPI from "./../apis/admin";
+import { Toast } from "./../utils/helpers";
 
 export default {
+  data() {
+    return {
+      isProcessing: false
+    };
+  },
   components: {
     AdminRestaurantForm
   },
   methods: {
-    handleAfterSubmit(formData) {
-      // 透過 API 將表單資料送到伺服器
-      for (let [name, value] of formData.entries()) {
-        // eslint-disable-next-line
-        console.log(name + ": " + value);
+    async handleAfterSubmit(formData) {
+      try {
+        const { data, statusText } = await adminAPI.restaurants.create({
+          formData
+        });
+
+        if (statusText !== "OK" || data.status !== "success") {
+          throw new Error(statusText);
+        }
+        // 成功的話則轉址到 `/admin/restaurants`
+        this.$router.push({ name: "admin-restaurants" });
+        this.isProcessing = true;
+      } catch (error) {
+        this.isProcessing = false;
+        Toast.fire({
+          type: "error",
+          title: "無法建立餐廳，請稍後再試"
+        });
       }
     }
   }

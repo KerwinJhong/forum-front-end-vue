@@ -1,34 +1,22 @@
 <template>
-  <div class="card mb-3">
-    <div class="row no-gutters">
-      <div class="col-md-4">
-        <img :src="profile.image" width="300px" height="300px" />
-      </div>
-      <div class="col-md-8">
-        <div class="card-body">
-          <h5 class="card-title">{{profile.name}}</h5>
-          <p class="card-text">{{profile.email}}</p>
-          <ul class="list-unstyled list-inline">
-            <li>
-              <strong>{{profile.Comments.length}}</strong> 已評論餐廳
-            </li>
-            <li>
-              <strong>{{profile.FavoritedRestaurants.length}}</strong> 收藏的餐廳
-            </li>
-            <li>
-              <strong>{{profile.Followings.length}}</strong> followings (追蹤者)
-            </li>
-            <li>
-              <strong>{{profile.Followers.length}}</strong> followers (追隨者)
-            </li>
-          </ul>
-          <p>
-            <a href="/users/1/edit">
-              <button type="submit" class="btn btn-primary">edit</button>
-            </a>
-          </p>
-        </div>
-      </div>
+  <div class="col-3 mb-4">
+    <img class :src="profile.image" width="140px" height="140px" />
+    <h2>{{profile.name}}</h2>
+    <span class="badge badge-secondary">追蹤人數：{{(profile.FollowerNum)}}</span>
+    <br />
+    <div v-if="!isCurrentUser">
+      <button
+        v-if="profile.isFollowed"
+        type="button"
+        class="btn btn-danger like mt-2"
+        @click.stop.prevent="deleteFollowing(profile.id)"
+      >取消追蹤</button>
+      <button
+        v-else
+        type="button"
+        class="btn btn-primary like mt-2"
+        @click.stop.prevent="addFollowing(profile.id)"
+      >追蹤</button>
     </div>
   </div>
 </template>
@@ -39,11 +27,18 @@ export default {
     profile: {
       type: Object,
       required: true
+    },
+    isCurrentUser: {
+      type: Boolean
     }
   },
-  data() {
-    return {};
-  },
-  methods: {}
+  methods: {
+    async addFollowing(userId) {
+      this.$emit("after-add-following", userId);
+    },
+    async deleteFollowing(userId) {
+      this.$emit("after-delete-following", userId);
+    }
+  }
 };
 </script>
