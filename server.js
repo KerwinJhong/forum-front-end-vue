@@ -10,10 +10,8 @@ app.use(cors());
 app.use(history());
 
 if (process.env.NODE_ENV === 'production') {
-  // Static folder
   app.use(express.static(__dirname + '/dist/'))
 
-  // Handle MPA
   app.get(/.*/, (req, res) => {
     res.sendFile(__dirname + '/dist/index.html')
   })
