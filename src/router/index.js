@@ -18,6 +18,7 @@ const authorizeIsAdmin = (to, from, next) => {
 
 const router = new Router({
   linkExactActiveClass: 'active',
+  mode: 'history',
   routes: [{
       path: '/',
       name: 'root',
