@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import NotFound from '../views/NotFound.vue'
-import SignIn from '../views/SignIn.vue'
-import Restaurants from '../views/Restaurants.vue'
-import store from '../store'
+import NotFound from './views/NotFound.vue'
+import SignIn from './views/SignIn.vue'
+import Restaurants from './views/Restaurants.vue'
+import store from './store'
 
 Vue.use(Router)
 
@@ -18,6 +18,7 @@ const authorizeIsAdmin = (to, from, next) => {
 
 const router = new Router({
   linkExactActiveClass: 'active',
+  mode: 'history',
   routes: [{
       path: '/',
       name: 'root',
@@ -32,7 +33,7 @@ const router = new Router({
       path: '/signup',
       name: 'sign-up',
       component: () =>
-        import ('../views/SignUp.vue')
+        import ('./views/SignUp.vue')
     },
     {
       path: '/restaurants',
@@ -43,43 +44,43 @@ const router = new Router({
       path: '/restaurants/feeds',
       name: 'RestaurantsFeeds',
       component: () =>
-        import ('../views/RestaurantsFeeds.vue')
+        import ('./views/RestaurantsFeeds.vue')
     },
     {
       path: '/restaurants/top',
       name: 'RestaurantsTop',
       component: () =>
-        import ('../views/RestaurantsTop.vue')
+        import ('./views/RestaurantsTop.vue')
     },
     {
       path: '/restaurants/:id',
       name: 'restaurant',
       component: () =>
-        import ('../views/Restaurant.vue')
+        import ('./views/Restaurant.vue')
     },
     {
       path: '/restaurants/:id/dashboard',
       name: 'RestaurantDashboard',
       component: () =>
-        import ('../views/RestaurantDashboard.vue')
+        import ('./views/RestaurantDashboard.vue')
     },
     {
       path: '/users/top',
       name: 'users-top',
       component: () =>
-        import ('../views/UsersTop.vue')
+        import ('./views/UsersTop.vue')
     },
     {
       path: '/user/:id',
       name: 'user',
       component: () =>
-        import ('../views/User.vue')
+        import ('./views/User.vue')
     },
     {
       path: '/user/:id/edit',
       name: 'user-edit',
       component: () =>
-        import ('../views/UserEdit.vue')
+        import ('./views/UserEdit.vue')
     },
     {
       path: '/admin',
@@ -90,42 +91,42 @@ const router = new Router({
       path: '/admin/users',
       name: 'admin-users',
       component: () =>
-        import ('../views/AdminUsers.vue'),
+        import ('./views/AdminUsers.vue'),
       beforeEnter: authorizeIsAdmin
     },
     {
       path: '/admin/restaurants',
       name: 'admin-restaurants',
       component: () =>
-        import ('../views/AdminRestaurants.vue'),
+        import ('./views/AdminRestaurants.vue'),
       beforeEnter: authorizeIsAdmin
     },
     {
       path: '/admin/restaurants/new',
       name: 'admin-restaurant-new',
       component: () =>
-        import ('../views/AdminRestaurantNew.vue'),
+        import ('./views/AdminRestaurantNew.vue'),
       beforeEnter: authorizeIsAdmin
     },
     {
       path: '/admin/categories',
       name: 'admin-categories',
       component: () =>
-        import ('../views/AdminCategories.vue'),
+        import ('./views/AdminCategories.vue'),
       beforeEnter: authorizeIsAdmin
     },
     {
       path: '/admin/restaurants/:id',
       name: 'admin-restaurant',
       component: () =>
-        import ('../views/AdminRestaurant.vue'),
+        import ('./views/AdminRestaurant.vue'),
       beforeEnter: authorizeIsAdmin
     },
     {
       path: '/admin/restaurants/:id/edit',
       name: 'admin-restaurant-edit',
       component: () =>
-        import ('../views/AdminRestaurantEdit.vue'),
+        import ('./views/AdminRestaurantEdit.vue'),
       beforeEnter: authorizeIsAdmin
     },
     {
